@@ -1,26 +1,27 @@
 package com.daanam.app.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.daanam.app.backend.models.enums.DonationStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "donations")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Organization {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Donation {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-  private String name;
-  private String description;
+  private DonationStatus donationStatus;
+  @ManyToOne
+  private Lead lead;
+  @ManyToOne
+  private User user;
+  @ManyToOne
+  private LeadPurpose leadPurpose;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

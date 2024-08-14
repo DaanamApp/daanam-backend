@@ -7,20 +7,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "organizations_locations_users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Organization {
+public class OrganizationLocationUser {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-  private String name;
-  private String description;
+  @ManyToOne(cascade = CascadeType.DETACH)
+  @JoinColumn
+  @JsonBackReference
+  private Organization organization;
+  @ManyToOne(cascade = CascadeType.DETACH)
+  @JoinColumn
+  @JsonBackReference
+  private Location location;
+  @ManyToOne(cascade = CascadeType.DETACH)
+  @JoinColumn
+  @JsonBackReference
+  private User user;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

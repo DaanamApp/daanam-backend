@@ -1,26 +1,32 @@
 package com.daanam.app.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.daanam.app.backend.models.enums.LeadStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Digits;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "leads")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Organization {
+public class Lead {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-  private String name;
+  @ManyToOne
+  @JoinColumn
+  private Organization organization;
   private String description;
+  private LeadStatus status;
+  @ManyToOne
+  @JoinColumn
+  private LeadPurpose leadPurpose;
+  @Column(nullable = false, precision = 12, scale = 2)
+  @Digits(integer = 10, fraction = 2)
+  private BigDecimal requiredValue;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

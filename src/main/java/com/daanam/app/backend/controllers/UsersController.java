@@ -1,7 +1,7 @@
 package com.daanam.app.backend.controllers;
 
 import com.daanam.app.backend.dtos.UserDto;
-import com.daanam.app.backend.services.user.UserService;
+import com.daanam.app.backend.services.businesslogic.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

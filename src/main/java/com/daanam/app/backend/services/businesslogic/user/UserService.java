@@ -1,4 +1,4 @@
-package com.daanam.app.backend.services.user;
+package com.daanam.app.backend.services.businesslogic.user;
 
 import com.daanam.app.backend.dtos.UserDto;
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +28,17 @@ public class Location {
   private String state;
   private String country;
   private int pincode;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+
+  @PrePersist
+  public void onCreation() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  public void onUpdation(){
+    this.updatedAt = LocalDateTime.now();
+  }
 }
