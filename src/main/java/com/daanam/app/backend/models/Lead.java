@@ -1,5 +1,6 @@
 package com.daanam.app.backend.models;
 
+import com.daanam.app.backend.models.enums.DonationType;
 import com.daanam.app.backend.models.enums.LeadStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
@@ -21,9 +22,7 @@ public class Lead {
   private Organization organization;
   private String description;
   private LeadStatus status;
-  @ManyToOne
-  @JoinColumn
-  private LeadPurpose leadPurpose;
+  private DonationType donationType;
   @Column(nullable = false, precision = 12, scale = 2)
   @Digits(integer = 10, fraction = 2)
   private BigDecimal requiredValue;

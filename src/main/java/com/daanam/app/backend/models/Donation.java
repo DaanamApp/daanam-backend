@@ -20,8 +20,6 @@ public class Donation {
   private Lead lead;
   @ManyToOne
   private User user;
-  @ManyToOne
-  private LeadPurpose leadPurpose;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
