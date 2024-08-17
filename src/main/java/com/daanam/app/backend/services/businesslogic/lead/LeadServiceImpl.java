@@ -10,6 +10,7 @@ import com.daanam.app.backend.repositories.LeadRepository;
 import com.daanam.app.backend.repositories.OrganizationRepository;
 import com.daanam.app.backend.repositories.projections.LeadView;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,24 @@ public class LeadServiceImpl implements LeadService{
 
   @Override
   public Lead saveLead(LeadDto leadDto) {
-    Organization organization = organizationRepository.findById(leadDto.getOrganizationId()).orElseThrow(EntityNotFoundException::new);
+    try{
+      Organization organization = organizationRepository.findById(leadDto.getOrganizationId()).orElseThrow(EntityNotFoundException::new);
 
-    Lead lead = new Lead();
-    lead.setDonationType(leadDto.getDonationType());
-    lead.setOrganization(organization);
-    lead.setDescription(leadDto.getDescription());
-    lead.setStatus(LeadStatus.GENERATED);
-    lead.setRequiredValue(leadDto.getRequiredValue());
+      Lead lead = new Lead();
+      lead.setDonationType(leadDto.getDonationType());
+      lead.setOrganization(organization);
+      lead.setDescription(leadDto.getDescription());
+      lead.setStatus(LeadStatus.GENERATED);
+      lead.setRequiredValue(leadDto.getRequiredValue());
 
-    return leadRepository.save(lead);
+      return leadRepository.save(lead);
+    } catch (PersistenceException e) {
+      log.error(e.getMessage(), e);
+      throw new PersistenceException("Failure during Lead persistence", e.getCause());
+    } catch (RuntimeException e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Failure during Lead generation", e.getCause());
+    }
   }
 
   /**
@@ -48,7 +57,7 @@ public class LeadServiceImpl implements LeadService{
     try{
       return leadRepository.findAllLeadsWithDonationCountAndFulfilledByLimitAndOffset(limit, offset).orElseThrow(RuntimeException::new);
     } catch (RuntimeException e) {
-      log.error(e.getMessage(), e.getCause());
+      log.error(e.getMessage(), e);
       throw new RuntimeException("Failed to fetch leads record");
     }
   }

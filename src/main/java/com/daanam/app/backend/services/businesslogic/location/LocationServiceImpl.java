@@ -7,6 +7,7 @@ import com.daanam.app.backend.repositories.LocationRepository;
 import com.daanam.app.backend.repositories.OrganizationLocationUserRepository;
 import com.daanam.app.backend.repositories.OrganizationRepository;
 import com.daanam.app.backend.repositories.UserRepository;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,9 +50,12 @@ public class LocationServiceImpl implements LocationService {
         organizationLocationUserRepository.save(organizationLocationUser);
       }
       return createdLocation;
+    } catch (PersistenceException e) {
+      log.error(e.getMessage(), e);
+      throw new PersistenceException("Failed to save location", e.getCause());
     } catch (RuntimeException e) {
-      log.error(e.getMessage(), e.getCause());
-      return null;
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Failure during Location persistence", e.getCause());
     }
   }
 }

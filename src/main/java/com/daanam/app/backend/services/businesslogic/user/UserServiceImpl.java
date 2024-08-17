@@ -7,6 +7,8 @@ import com.daanam.app.backend.repositories.LocationRepository;
 import com.daanam.app.backend.repositories.OrganizationLocationUserRepository;
 import com.daanam.app.backend.repositories.OrganizationRepository;
 import com.daanam.app.backend.repositories.UserRepository;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,12 +42,15 @@ public class UserServiceImpl implements UserService {
         if (userDto.getLocationId() != null)
           organizationLocationUser.setLocation(locationRepository.findById(userDto.getLocationId()).orElseThrow());
       }
-      User persistedUser = userRepository.save(user);
+      userRepository.save(user);
 
       return true;
-    } catch (Exception e) {
-      log.error(e.getMessage(), e.getCause());
-      return false;
+    } catch (PersistenceException e) {
+      log.error(e.getMessage(), e);
+      throw new PersistenceException("User registration failed to persist", e.getCause());
+    } catch (RuntimeException e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Failure during user registration", e.getCause());
     }
   }
 
@@ -63,9 +68,15 @@ public class UserServiceImpl implements UserService {
       userDto.setUserCategory(fetchedUser.getUserCategory());
 
       return userDto;
-    } catch (Exception e) {
-      log.error(e.getMessage(), e.getCause());
-      return null;
+    } catch (NoResultException e) {
+      log.error(e.getMessage(), e);
+      throw new NoResultException("User registration failed to persist");
+    } catch (PersistenceException e) {
+      log.error(e.getMessage(), e);
+      throw new PersistenceException("User registration failed to persist", e.getCause());
+    } catch (RuntimeException e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException("Failure during user registration", e.getCause());
     }
   }
 }
